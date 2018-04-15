@@ -12,9 +12,9 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+var client_id = '4ac7571ef2f440dfb50a5d55b940ffbb'; // Your client id
+var client_secret = '958702d333d54467906630aeaf26aaf5'; // Your secret
+var redirect_uri = 'http://159.89.227.203:8888/callback'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -44,7 +44,9 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email';
+//  var scope = 'user-read-private user-read-email';
+var scope = 'playlist-read-private playlist-read-collaborative  playlist-modify-public  playlist-modify-private  user-follow-modify  user-follow-read  user-library-read  user-library-modify  user-read-private  user-read-birthdate  user-read-email  user-top-read' ;
+
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -59,6 +61,7 @@ app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
+
 
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -99,6 +102,56 @@ app.get('/callback', function(req, res) {
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
+
+var fs = require('fs');
+
+
+
+fs.appendFile("/tmp/USERS", "\n", function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("The file was saved!");
+});
+
+fs.appendFile("/tmp/USERS", body.id, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("The file was saved!");
+});
+
+fs.appendFile("/tmp/USERS", "\t", function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("The file was saved!");
+});
+
+
+fs.appendFile("/tmp/USERS", access_token, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("The file was saved!");
+});
+
+fs.appendFile("/tmp/USERS", "\t", function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("The file was saved!");
+});
+
+
+fs.appendFile("/tmp/USERS", refresh_token, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("The file was saved!");
+}); 
+
+
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -130,6 +183,17 @@ app.get('/refresh_token', function(req, res) {
     },
     json: true
   };
+
+var fs = require('fs');
+
+fs.writeFile("/tmp/test", authOptions.form.refresh_token, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+}); 
+
 
   request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
